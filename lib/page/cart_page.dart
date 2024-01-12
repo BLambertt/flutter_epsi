@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../bo/cart.dart';
@@ -54,38 +55,59 @@ class ListCart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<Cart>(
-        builder: (context, cart, _) => Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Votre panier total est de"),
-                    Text(cart.priceTotalInEuro())
-                  ],
-                ),
-                //Ajouter la ligne de total (Row Votre panier total est de)
-                //Avec le montant
-                Flexible(
-                  child: ListView.builder(
-                      itemCount: cart.items.length,
-                      itemBuilder: (context, index) => ListTile(
-                            leading: Image.network(cart.items[index].image),
-                            title: Text(cart.items[index].nom),
-                            subtitle: Text(
-                              cart.items[index].getPrixEuro(),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            //Supprimer un élément du panier
-                            trailing: TextButton(
-                              child: const Text("SUPPRIMER"),
-                              onPressed: () => context
-                                  .read<Cart>()
-                                  .removeArticle(cart.items[index]),
-                            ),
-                          )),
-                ),
-              ],
-            ));
+        builder: (context, cart, _) =>
+           Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Votre panier total est de"),
+                      Text(cart.priceTotalInEuro()),
+          
+                    ],
+                  ),
+                  //Ajouter la ligne de total (Row Votre panier total est de)
+                  //Avec le montant
+                  Flexible(
+                    child: ListView.builder(
+                        itemCount: cart.items.length,
+                        itemBuilder: (context, index) => ListTile(
+                              leading: Image.network(cart.items[index].image),
+                              title: Text(cart.items[index].nom),
+                              subtitle: Text(
+                                cart.items[index].getPrixEuro(),
+                                style:
+                                    const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              //Supprimer un élément du panier
+                              trailing: TextButton(
+                                child: const Text("SUPPRIMER"),
+                                onPressed: () => context
+                                    .read<Cart>()
+                                    .removeArticle(cart.items[index]),
+                              ),
+                            )),
+                  ),
+
+                      ElevatedButton(
+                            onPressed: () => context.go("/payment"),
+
+                            style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                minimumSize: const Size.fromHeight(50),
+                                backgroundColor: Theme.of(context).colorScheme.background ,
+                                shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(color: Theme.of(context).colorScheme.outline),
+                                )
+                            ) ,
+                            child: const Text("Procéder au paiement"),
+                             ),
+
+
+
+                ],
+              ),
+        );
   }
 }
